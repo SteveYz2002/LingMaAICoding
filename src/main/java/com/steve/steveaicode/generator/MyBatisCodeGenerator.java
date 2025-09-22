@@ -39,7 +39,7 @@ public class MyBatisCodeGenerator {
         generator.generate();
     }
 
-    // https://mybatis-flex.com/zh/others/codegen.html
+    //  https://mybatis-flex.com/zh/others/codegen.html
     public static GlobalConfig createGlobalConfig() {
         // 创建配置内容
         GlobalConfig globalConfig = new GlobalConfig();

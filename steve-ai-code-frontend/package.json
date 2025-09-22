@@ -16,6 +16,7 @@
   "dependencies": {
     "ant-design-vue": "^4.2.6",
     "axios": "^1.12.2",
+    "lodash-es": "^4.17.21",
     "pinia": "^3.0.3",
     "vue": "^3.5.17",
     "vue-cropper": "^0.6.5",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.2",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "^22.15.32",
     "@umijs/openapi": "^1.14.1",
     "@vitejs/plugin-vue": "^6.0.0",

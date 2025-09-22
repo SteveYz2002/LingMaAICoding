@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.steve.steveaicode.model.entity.User;
 import com.steve.steveaicode.service.UserService;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 /**
@@ -44,11 +45,11 @@ public class UserController {
     /**
      * 用户注册
      *
-     * @param userRegisterRequest  用户注册请求
-     * @return    注册结果
+     * @param userRegisterRequest 用户注册请求
+     * @return 注册结果
      */
     @PostMapping("register")
-    public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest  userRegisterRequest) {
+    public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
         ThrowUtils.throwIf(userRegisterRequest == null, ErrorCode.PARAMS_ERROR);
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
@@ -60,9 +61,9 @@ public class UserController {
     /**
      * 用户登录
      *
-     * @param userLoginRequest   用户登录请求
-     * @param request            请求对象
-     * @return    登录结果
+     * @param userLoginRequest 用户登录请求
+     * @param request          请求对象
+     * @return 登录结果
      */
     @PostMapping("login")
     public BaseResponse<LoginUserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
@@ -74,8 +75,8 @@ public class UserController {
     /**
      * 获取当前登录用户
      *
-     * @param request   请求对象
-     * @return          当前登录用户
+     * @param request 请求对象
+     * @return 当前登录用户
      */
     @GetMapping("/get/login")
     public BaseResponse<LoginUserVO> getLoginUser(HttpServletRequest request) {
@@ -86,8 +87,8 @@ public class UserController {
     /**
      * 用户退出登录
      *
-     * @param request    请求对象
-     * @return           是否退出成功
+     * @param request 请求对象
+     * @return 是否退出成功
      */
     @PostMapping("/logout")
     public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
