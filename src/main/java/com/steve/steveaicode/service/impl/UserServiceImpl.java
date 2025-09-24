@@ -7,7 +7,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.steve.steveaicode.exception.BusinessException;
 import com.steve.steveaicode.exception.ErrorCode;
-import com.steve.steveaicode.model.dto.UserQueryRequest;
+import com.steve.steveaicode.model.dto.user.UserQueryRequest;
 import com.steve.steveaicode.model.entity.User;
 import com.steve.steveaicode.mapper.UserMapper;
 import com.steve.steveaicode.model.enums.UserRoleEnum;

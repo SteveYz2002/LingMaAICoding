@@ -2,7 +2,7 @@ package com.steve.steveaicode.service;
 
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
-import com.steve.steveaicode.model.dto.UserQueryRequest;
+import com.steve.steveaicode.model.dto.user.UserQueryRequest;
 import com.steve.steveaicode.model.entity.User;
 import com.steve.steveaicode.model.vo.LoginUserVO;
 import com.steve.steveaicode.model.vo.UserVO;

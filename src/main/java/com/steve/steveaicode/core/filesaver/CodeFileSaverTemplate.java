@@ -1,8 +1,8 @@
 package com.steve.steveaicode.core.filesaver;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.steve.steveaicode.constant.AppConstant;
 import com.steve.steveaicode.exception.BusinessException;
 import com.steve.steveaicode.exception.ErrorCode;
 import com.steve.steveaicode.model.enums.CodeGenTypeEnum;
@@ -16,17 +16,18 @@ import java.nio.charset.StandardCharsets;
 public abstract class CodeFileSaverTemplate<T> {
 
     // 文件保存根目录
-    protected static final String FILE_SAVE_ROOT_DIR = System.getProperty("user.dir") + "/tmp/code_output";
+    protected static final String FILE_SAVE_ROOT_DIR = AppConstant.CODE_OUTPUT_ROOT_DIR;
 
     /**
      * 模板方法：保存代码的标准流程
      *
+     * @param appId  应用 id
      * @param result 代码结果对象
      * @return 保存的目录
      */
-    public final File saveCode(T result) {
+    public final File saveCode(T result, Long appId) {
         validateInput(result);
-        String baseDirPath = buildUniqueDir();
+        String baseDirPath = buildUniqueDir(appId);
         saveFiles(result, baseDirPath);
         return new File(baseDirPath);
     }
@@ -45,11 +46,15 @@ public abstract class CodeFileSaverTemplate<T> {
     /**
      * 构建唯一目录路径
      *
+     * @param appId 应用 id
      * @return 目录路径
      */
-    protected final String buildUniqueDir() {
+    protected final String buildUniqueDir(Long appId) {
+        if (appId == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "应用 id 不能为空");
+        }
         String codeType = getCodeType().getValue();
-        String uniqueDirName = StrUtil.format("{}_{}", codeType, IdUtil.getSnowflakeNextIdStr());
+        String uniqueDirName = StrUtil.format("{}_{}", codeType, appId);
         String uniquePath = FILE_SAVE_ROOT_DIR + File.separator + uniqueDirName;
         FileUtil.mkdir(uniquePath);
         return uniquePath;

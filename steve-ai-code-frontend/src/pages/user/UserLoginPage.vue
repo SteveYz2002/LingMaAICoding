@@ -10,13 +10,13 @@
         name="userPassword"
         :rules="[
           { required: true, message: '请输入密码' },
-          { min: 8, message: '密码不能小于 8 位' },
+          { min: 8, message: '密码长度不能小于 8 位' },
         ]"
       >
         <a-input-password v-model:value="formState.userPassword" placeholder="请输入密码" />
       </a-form-item>
       <div class="tips">
-        没有账号？
+        没有账号
         <RouterLink to="/user/register">去注册</RouterLink>
       </div>
       <a-form-item>
@@ -25,15 +25,11 @@
     </a-form>
   </div>
 </template>
-
-
-
-<script setup lang="ts">
-
+<script lang="ts" setup>
 import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
-import { useLoginUserStore } from '@/stores/loginUser.ts'
 import { userLogin } from '@/api/userController.ts'
+import { useLoginUserStore } from '@/stores/loginUser.ts'
+import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 
 const formState = reactive<API.UserLoginRequest>({
@@ -62,14 +58,14 @@ const handleSubmit = async (values: any) => {
     message.error('登录失败，' + res.data.message)
   }
 }
-
-
 </script>
 
-<style>
+<style scoped>
 #userLoginPage {
-  max-width: 360px;
-  margin: 0 auto;
+  background: white;
+  max-width: 720px;
+  padding: 24px;
+  margin: 24px auto;
 }
 
 .title {
@@ -84,10 +80,9 @@ const handleSubmit = async (values: any) => {
 }
 
 .tips {
-  margin-bottom: 16px;
+  text-align: right;
   color: #bbb;
   font-size: 13px;
-  text-align: right;
+  margin-bottom: 16px;
 }
-
 </style>

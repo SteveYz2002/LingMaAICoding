@@ -1,4 +1,4 @@
-package com.steve.steveaicode.model.dto;
+package com.steve.steveaicode.model.dto.user;
 
 import lombok.Data;
 

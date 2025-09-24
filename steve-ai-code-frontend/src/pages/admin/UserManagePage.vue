@@ -14,103 +14,39 @@
     </a-form>
     <a-divider />
     <!-- 表格 -->
+    <a-table
+      :columns="columns"
+      :data-source="data"
+      :pagination="pagination"
+      @change="doTableChange"
+    >
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.dataIndex === 'userAvatar'">
+          <a-image :src="record.userAvatar" :width="120" />
+        </template>
+        <template v-else-if="column.dataIndex === 'userRole'">
+          <div v-if="record.userRole === 'admin'">
+            <a-tag color="green">管理员</a-tag>
+          </div>
+          <div v-else>
+            <a-tag color="blue">普通用户</a-tag>
+          </div>
+        </template>
+        <template v-else-if="column.dataIndex === 'createTime'">
+          {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
+        </template>
+        <template v-else-if="column.key === 'action'">
+          <a-button danger @click="doDelete(record.id)">删除</a-button>
+        </template>
+      </template>
+    </a-table>
   </div>
-
-  <a-table
-    :columns="columns"
-    :data-source="data"
-    :pagination="pagination"
-    @change="handleTableChange"
-  >
-    <template #headerCell="{ column }">
-      <template v-if="column.key === 'name'">
-        <span>
-          <smile-outlined />
-          Name
-        </span>
-      </template>
-    </template>
-
-    <template #bodyCell="{ column, record }">
-      <template v-if="['userName', 'userProfile'].includes(column.dataIndex)">
-        <div class="editable-field">
-          <a-input
-            v-if="editableData[record.id]"
-            v-model:value="editableData[record.id][column.dataIndex]"
-            class="edit-input"
-          />
-          <template v-else>
-            <span class="field-text">{{ record[column.dataIndex] }}</span>
-          </template>
-        </div>
-      </template>
-      <template v-if="column.dataIndex === 'userAvatar'">
-        <a-image :src="record.userAvatar" :width="120" />
-      </template>
-      <template v-else-if="column.dataIndex === 'userRole'">
-        <div v-if="record.userRole === 'admin'">
-          <a-tag color="green">管理员</a-tag>
-        </div>
-        <div v-else>
-          <a-tag color="blue">普通用户</a-tag>
-        </div>
-      </template>
-      <template v-else-if="column.dataIndex === 'createTime'">
-        {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
-      </template>
-      <template v-else-if="column.key === 'action'">
-        <div class="action-group">
-          <a-button danger @click="doDelete(record.id)" class="action-button delete-button">
-            <template #icon>
-              <DeleteOutlined />
-            </template>
-            删除
-          </a-button>
-
-          <template v-if="editableData[record.id]">
-            <a-button type="primary" @click="save(record.id)" class="action-button save-button">
-              <template #icon>
-                <SaveOutlined />
-              </template>
-              保存
-            </a-button>
-
-            <a-popconfirm title="确定取消编辑吗?" @confirm="cancel(record.id)" class="popconfirm">
-              <a-button class="action-button cancel-button">
-                <template #icon>
-                  <CloseOutlined />
-                </template>
-                取消
-              </a-button>
-            </a-popconfirm>
-          </template>
-
-          <template v-else>
-            <a-button type="primary" @click="edit(record.id)" class="action-button edit-button">
-              <template #icon>
-                <EditOutlined />
-              </template>
-              编辑
-            </a-button>
-          </template>
-        </div>
-      </template>
-    </template>
-  </a-table>
 </template>
 <script lang="ts" setup>
-import {
-  SmileOutlined,
-  SaveOutlined,
-  CloseOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from '@ant-design/icons-vue'
-import { computed, onMounted, reactive, ref, type UnwrapRef } from 'vue'
-import { deleteUser, listUserVoByPage, updateUser } from '@/api/userController.ts'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { deleteUser, listUserVoByPage } from '@/api/userController.ts'
 import { message } from 'ant-design-vue'
 import dayjs from 'dayjs'
-import { cloneDeep } from 'lodash-es'
 
 const columns = [
   {
@@ -147,7 +83,7 @@ const columns = [
   },
 ]
 
-// 数据
+// 展示的数据
 const data = ref<API.UserVO[]>([])
 const total = ref(0)
 
@@ -170,38 +106,6 @@ const fetchData = async () => {
   }
 }
 
-const editableData: UnwrapRef<Record<number, API.UserVO>> = reactive({})
-
-const edit = (id: number) => {
-  editableData[id] = cloneDeep(data.value.filter((item) => id === item.id)[0])
-}
-const save = async (id: number) => {
-  try {
-    // 获取正在编辑的数据
-    const editingData = editableData[id]
-
-    // 调用后端接口
-    const res = await updateUser({
-      id: id,
-      userName: editingData.userName,
-      userProfile: editingData.userProfile,
-    })
-    if (res.data.code === 0) {
-      message.success('更新成功')
-      await fetchData()
-      delete editableData[id]
-    } else {
-      message.error('更新失败')
-    }
-  } catch (e) {
-    message.error('更新失败')
-  }
-}
-
-const cancel = (key: number) => {
-  delete editableData[key]
-}
-
 // 分页参数
 const pagination = computed(() => {
   return {
@@ -213,13 +117,14 @@ const pagination = computed(() => {
   }
 })
 
-const handleTableChange = (page: any) => {
+// 表格分页变化时的操作
+const doTableChange = (page: { current: number; pageSize: number }) => {
   searchParams.pageNum = page.current
   searchParams.pageSize = page.pageSize
   fetchData()
 }
 
-// 获取数据
+// 搜索数据
 const doSearch = () => {
   // 重置页码
   searchParams.pageNum = 1
@@ -248,9 +153,9 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.action-group {
-  display: flex;
-  margin-left: 10px;
-  gap: 10px;
+#userManagePage {
+  padding: 24px;
+  background: white;
+  margin-top: 16px;
 }
 </style>
